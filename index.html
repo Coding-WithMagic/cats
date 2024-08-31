@@ -1,21 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="/">
-
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
@@ -33,12 +19,42 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <!-- Flutter App Bootstrap -->
   <script src="flutter_bootstrap.js" async></script>
-    <script async src="https://telegram.org/js/telegram-widget.js?15"
-        data-telegram-login="Catssybot"
-        data-size="large"
-        data-radius="10"
-        data-auth-url="http://38.180.165.251:5000/auth"
-        data-request-access="write"></script>
+
+  <!-- Telegram Login Button -->
+  <script async src="https://telegram.org/js/telegram-widget.js?15"
+      data-telegram-login="Catssybot"  <!-- Replace with your bot username -->
+      data-size="large"
+      data-radius="10"
+      data-auth-url="javascript:void(0)"  <!-- Prevent default Telegram auth URL -->
+      data-request-access="write"
+      onAuth="onTelegramAuth(user)">
+  </script>
+
+  <!-- JavaScript to Handle Telegram Authentication -->
+  <script>
+    function onTelegramAuth(user) {
+      // Prepare user data to send to the Flask backend
+      const data = {
+        username: user.username,
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name
+      };
+
+      // Send the data to the Flask backend
+      fetch('http://38.180.165.251:5000/auth', {  // Replace with your server URL
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
 </body>
 </html>
