@@ -27,7 +27,6 @@
       data-telegram-login="Catssybot"  <!-- Replace with your bot username -->
       data-size="large"
       data-radius="10"
-      data-auth-url="javascript:void(0)"  <!-- Prevent default Telegram auth URL -->
       data-request-access="write"
       onAuth="onTelegramAuth(user)">
   </script>
@@ -35,6 +34,8 @@
   <!-- JavaScript to Handle Telegram Authentication -->
   <script>
     function onTelegramAuth(user) {
+      console.log("User authenticated with Telegram:", user); // Log user data
+      
       // Prepare user data to send to the Flask backend
       const data = {
         username: user.username,
@@ -51,8 +52,11 @@
         },
         body: JSON.stringify(data)
       })
-      .then(response => response.text())
-      .then(result => console.log(result))
+      .then(response => {
+         console.log('Response status:', response.status); // Log response status
+         return response.text();
+       })
+      .then(result => console.log('Server response:', result))
       .catch(error => console.error('Error:', error));
     }
   </script>
